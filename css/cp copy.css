@@ -1,0 +1,732 @@
+/* ======================================== */
+/* ==        Font & Global Styles        == */
+/* ======================================== */
+
+@font-face {
+    font-family: 'Not-Angka';
+    src: url('../Parnumation 3.ttf') format('truetype');
+}
+
+body {
+    margin: 0;
+    height: 100vh;
+    display: flex;
+    overflow: hidden; /* Mencegah scroll di body */
+    /* background-color: #f8f8f8;  */
+    font-family: Arial, sans-serif; /* Font dari definisi kedua */
+}
+
+/* ======================================== */
+/* ==         Layout Utama & Panel       == */
+/* ======================================== */
+
+#main-container {
+    display: flex;
+    flex-grow: 1;
+    height: 100%;
+    overflow: hidden;
+}
+
+#left-panel,
+#right-panel {
+    height: 100%;
+    overflow-x: hidden;
+    min-width: 200px;
+    display: flex;
+    flex-direction: column;
+    flex-basis: 0; /* Biarkan flex-grow menentukan lebar awal */
+    transition: width 0.3s ease; /* Transisi dari definisi kedua */
+    position: relative; /* Untuk positioning anak (misal: toggle-label, settings-icons) */
+}
+
+/* Kontainer baru untuk resizer */
+#resizer-container {
+    position: relative;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+}
+
+#resizer {
+    flex-basis: 10px;
+    cursor: col-resize;
+    height: 100%;
+    border-left: 1px solid #aaa;
+    border-right: 1px solid #aaa;
+    box-sizing: border-box;
+}
+
+/* Kontainer untuk pengaturan di left-panel saat fullscreen */
+#left-panel-fullscreen-configs {
+    display: none; /* Sembunyi secara default */
+    flex-direction:row;
+    align-items: center;
+    padding: 5px;
+    border-bottom: 1px solid #ccc; /* Pemisah dari preview, warna akan diatur tema */
+    overflow-y: auto; /* Jika kontennya banyak */
+    box-sizing: border-box;
+    resize: vertical;
+}
+
+#layout-screen-config-container {margin-bottom: 0;}
+#layout-screen-config-container .layout-button {
+    width: 100px;
+    /* margin: 2px; */
+}
+#display-appearance-config-container {
+    padding: 10px;
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+}
+
+/* Style untuk kontainer baru di left-panel yang berisi toggle dan input warna */
+/* #toggle-and-color-config-container .horizontal-settings-group { */
+/* Targetkan kelas .horizontal-settings-group yang merupakan anak langsung dari #left-panel-fullscreen-configs */
+#left-panel-fullscreen-configs > .horizontal-settings-group {
+    display: flex;
+    /* flex-wrap: wrap; Agar item pindah ke baris baru jika tidak cukup ruang */
+    /* gap: 10px; Jarak antar setting-item */
+    align-items: center; /* Sejajarkan item secara vertikal */
+    /* padding: 5px; Tambahkan padding jika perlu */
+    /* border: 1px solid #e0e0e0; */
+    border-radius: 4px;
+}
+
+/* #display-appearance-config-container .settings-icons { */
+#font-color-opacity-settings .settings-icons { /* Sesuaikan selektor ini */
+    display: flex; /* Atur agar item di dalamnya horizontal */
+    flex-wrap: wrap; /* Wrap jika perlu */
+    /* gap: 10px; Jarak antar item */
+    justify-content: center; /* Pusatkan item jika ada ruang lebih */
+}
+/* #font-color-opacity-settings .color-picker {display: none;} */
+
+#left-panel #editor {
+    flex-grow: 1; /* Ambil sisa ruang vertikal */
+    min-height: 100px; /* Tinggi minimum */
+    height: 38%; /* Tinggi spesifik dari definisi kedua */
+    width: 99%; /* Lebar spesifik dari definisi kedua */
+    overflow-y: auto;
+    resize:vertical; /* none untuk nonaktifkan resize manual */
+    padding: 10px;
+    box-sizing: border-box;
+    font-family: Arial; /* Font dari definisi kedua */
+}
+
+#left-panel #preview {
+    flex-grow: 1; /* Ambil sisa ruang jika editor disembunyikan */
+    min-height: 200px; /* Tinggi minimum */
+    height: 57%; /* Tinggi spesifik dari definisi kedua */
+    width: 100%; /* Lebar spesifik dari definisi kedua */
+    overflow-y: auto;
+    border-top: 1px solid #ccc;
+    box-sizing: border-box;
+    white-space: pre-line; /* Mempertahankan baris baru dari definisi kedua */
+}
+
+/* Tombol Aksi File */
+#file-loader {
+    display: flex;
+    flex-direction: row; /* Pastikan horizontal */
+    justify-content: space-between; /* Sebar item */
+    align-items: center;
+    gap: 10px;
+    margin: 10px 0; /* Margin atas & bawah */
+    padding: 0 15px; /* Padding kiri-kanan */
+    flex-wrap: wrap;
+}
+
+#file-loader button {
+    padding: 8px 12px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+}
+
+#file-loader button img {
+    height: 2em;
+    width: 2.5em;
+}
+
+#file-status {
+    font-style: italic;
+    /*margin-left: auto; /* Dorong ke kanan */
+    font-size: 0.9em;
+    text-align: right;
+    flex-grow: 1;
+    padding-left: 10px;
+}
+
+.modal-popup {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Latar belakang overlay */
+    display: none; /* Defaultnya tersembunyi, JS akan mengubah ke flex */
+    justify-content: center;
+    align-items: center;
+    z-index: 1000; /* Pastikan di atas elemen lain */
+    opacity: 0; /* Mulai transparan */
+    visibility: hidden; /* Mulai tersembunyi */
+    transition: opacity 0.3s ease, visibility 0s linear 0.3s;
+}
+
+.modal-popup.active, 
+.modal-popup[style*="display: block"],
+.modal-popup[style*="display: flex"] {
+    opacity: 1;
+    visibility: visible;
+    transition: opacity 0.3s ease, visibility 0s linear 0s;
+}
+
+.modal-popup-content {
+    padding: 20px 25px;
+    border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    min-width: 300px; /* Lebar minimal */
+    max-width: 90%; /* Lebar maksimal */
+    max-height: 85%; /* Tinggi maksimal */
+    display: flex;
+    flex-direction: column;
+    position: relative; /* Untuk tombol close absolut */
+    overflow-y: auto; /* Jika konten lebih tinggi dari maxHeight */
+    padding-bottom: 30px;
+}
+
+.modal-popup-content h3 {
+    margin-top: 0;
+    margin-bottom: 20px;
+    padding-top: 10px; /* Jarak jika ada tombol close di atas */
+    text-align: center;
+    font-size: 1.4em;
+}
+
+.modal-close-button {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    background: none;
+    border: none;
+    font-size: 2rem; /* Ukuran 'X' */
+    font-weight: bold;
+    line-height: 1;
+    padding: 0;
+    cursor: pointer;
+    transition: color 0.2s ease;
+}
+
+.modal-popup-content button {
+    padding: 10px 18px;
+    margin: 8px 5px;
+    border: 1px solid #cccccc;
+    cursor: pointer;
+    border-radius: 5px;
+    font-size: 0.95em;
+    transition: background-color 0.2s, border-color 0.2s;
+}
+
+.modal-popup-content button img {
+    height: 1em;
+    margin-right: 6px;
+    vertical-align: middle;
+    position: relative;
+    top: -1px;
+}
+
+.modal-popup-content input[type="text"] {
+    width: calc(100% - 22px); /* (padding kiri+kanan) + (border kiri+kanan) */
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #cccccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    font-size: 1em;
+}
+
+.modal-popup-content .file-list-container {
+    max-height: 300px; /* Sesuaikan */
+    overflow-y: auto;
+    margin-bottom: 15px;
+    border: 1px solid #eeeeee;
+    padding: 8px;
+    border-radius: 4px;
+}
+
+.modal-popup-content .file-list-container ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.modal-popup-content .file-list-button { /* Tombol file di dalam list */
+    width: 100%;
+    padding: 9px 12px;
+    margin-bottom: 5px;
+    text-align: left;
+    border: 1px solid #dddddd;
+    border-radius: 4px;
+    font-size: 0.9em;
+    transition: background-color 0.2s, border-color 0.2s, color 0.2s;
+}
+
+/* === Gaya untuk Resize Handle Modal === */
+.modal-resize-handle {
+    position: absolute;
+    bottom: 5px;  /* Sedikit jarak dari bawah */
+    right: 5px;   /* Sedikit jarak dari kanan */
+    width: 15px;
+    height: 15px;
+    cursor: nwse-resize; /* Kursor untuk resize diagonal */
+    z-index: 10; /* Pastikan di atas konten lain di dalam modal-content */
+    box-sizing: border-box;
+    opacity: 0.7;
+    transition: opacity 0.2s;
+}
+.modal-resize-handle:hover {
+    opacity: 1;
+}
+
+/* Tombol Toggle Panel Kiri */
+.toggle-label {
+    position: absolute; /* Posisi absolut relatif ke panel */
+    text-align: center;
+    cursor: pointer;
+    text-shadow: -1px -1px 0 rgba(58, 57, 57, 0.35), 
+                 1px 1px 0 rgba(255, 255, 255, 0.35);
+    padding: 5px 10px;
+    font-weight: bold;
+    font-size: 24px;
+    z-index: 10;
+    user-select: none;
+}
+
+/* State Fullscreen Panel Kiri */
+#left-panel.fullscreen #editor,
+#left-panel.fullscreen #file-loader { /* Sembunyikan file loader juga */
+    display: none;
+}
+
+#left-panel.fullscreen #left-panel-fullscreen-configs {
+    display: flex; /* Tampilkan kontainer pengaturan saat fullscreen */
+}
+
+#left-panel.fullscreen #preview {
+    height: 100%; /* Ambil tinggi penuh saat fullscreen */
+    border-top: none; /* Hapus border atas saat fullscreen */
+}
+
+/* ======================================== */
+/* ==           Panel Kanan            == */
+/* ======================================== */
+
+/* Kontainer untuk pengaturan global di atas tab */
+#top-bar-global-settings {
+    padding: 10px 15px;
+    border-bottom: 1px solid #ccc;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+    text-align: center;
+}
+
+/* --- Kontainer Tab --- */
+#right-panel #tab-container {
+    display: flex; /* Pastikan ini ada jika belum */
+    transition: margin-top 0.4s ease-in-out; /* Animasi margin dari definisi kedua */
+}
+
+.tab-button {
+    padding: 10px 20px; /* Padding dari definisi kedua */
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    flex-grow: 1; /* Biarkan tombol mengisi ruang jika perlu */
+    text-align: center;
+}
+
+/* --- Kontainer Konten Tab --- */
+#right-panel .tab-content-container {
+    flex-grow: 1;
+    position: relative;
+}
+
+.tab-content {
+    display: none; /* Sembunyikan default */
+    height: 100%; /* Tinggi penuh kontainer */
+    overflow-y: auto; /* Scroll jika perlu */
+    padding: 20px; /* Padding untuk konten tab */
+    animation: fadeIn 0.3s ease;
+    box-sizing: border-box; /* Pastikan padding tidak menambah ukuran */
+}
+.tab-content.active {
+    display: block; 
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* --- Konten Spesifik Tab --- */
+
+/* Tab Alkitab */
+#alkitab-tab .search-container {
+    display: flex;
+    margin-bottom: 20px;
+    gap: 10px; /* Jarak antar input/select */
+    flex-wrap: wrap; /* Wrap jika layar sempit */
+}
+#alkitab-tab .search-container input[type="text"] { /* Lebih spesifik */
+    flex-grow: 1; /* Input ambil sisa ruang */
+    min-width: 200px; /* Lebar minimum input */
+    padding: 10px;
+    margin-right: 0; /* Hapus margin kanan jika pakai gap */
+}
+#alkitab-tab .search-container select { /* Lebih spesifik */
+    min-width: 200px; /* Lebar minimum select */
+    padding: 10px;
+}
+
+.verse-result {
+    display: flex;
+    align-items: flex-start;
+    padding: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    border-width: 1px;
+    border-style: solid;
+    gap: 8px; /* Jarak ikon & teks dari index.html */
+    transition: background-color 0.2s; /* Transisi dari index.html */
+}
+.verse-result.selected {
+    /* background-color: #e0f7fa; 
+    border: 1px solid #00008b; Border terpilih dari definisi pertama */
+}
+.verse-result .icon img { /* Style dari index.html */
+    width: 24px;
+    height: auto;
+    margin-top: 2px;
+}
+.verse-result .verse-text { /* Style dari index.html */
+    flex-grow: 1;
+}
+.verse-result .verse-text strong { /* Style dari index.html */
+    display: block;
+    margin-bottom: 4px;
+    font-size: 0.95em;
+}
+.verse-result .verse-text p { /* Style dari index.html */
+    margin: 0;
+    font-size: 0.9em;
+    line-height: 1.4;
+    font-style: italic;
+    border-color: red;
+    font-style: italic;
+    font-weight: bold;
+    margin-bottom: 5px;
+    font-size: 0.9em;
+    font-weight: bold;
+    font-size: 1.1em;
+    margin-bottom: 10px;
+    padding-bottom: 5px;
+    border-bottom: 1px solid #ccc;
+}
+
+/* Tab HowTo (Notation) */
+#notation-tab h4 {
+    text-align: center;
+}
+#notation-tab table {
+    width: auto;
+    margin: 15px auto;
+    border-collapse: collapse;
+}
+#notation-tab table tr,
+#notation-tab table td {
+    display: flex;
+    font-weight: bold;
+    padding: 5px;
+    margin-left: 0; /* Hapus margin kiri spesifik */
+    align-items: baseline;
+}
+#notation-tab table td:nth-child(1) {
+    text-wrap: nowrap;
+    font-size: larger;
+    flex-basis: 40%;
+    flex-shrink: 0;
+}
+#notation-tab table td:nth-child(2) {
+    font-weight: normal;
+    padding-left: 10px;
+    flex-basis: 60%;
+}
+
+/* Tab Setting */
+#setting-tab {
+    /* padding: 15px; */
+    /* color: #333; */
+}
+#setting-tab h4 {
+    margin-bottom:0;
+    /* border-bottom: 1px solid #eee; */
+   justify-items: center;
+}
+
+.setting-group {
+    /* margin-bottom: 10px; */
+    margin-top: 0;
+    /* padding: 10px; */
+    /* border: 1px solid #e0e0e0; */
+    border-radius: 5px;
+    align-content: center;
+}
+.setting-item {
+    display: flex;
+    flex-direction:column;
+    align-items: center;
+    padding: 8px 0;
+    gap: 4px;
+}
+.setting-item:last-child {
+    border-bottom: none; /* Hapus border di item terakhir */
+}
+.setting-item span {
+    margin-right: 15px;
+    flex-grow: 1;
+}
+
+/* Toggle Switch */
+.switch { position: relative; display: inline-block; width: 50px; height: 20px; flex-shrink: 0; }
+.switch input { opacity: 0; width: 0; height: 0; }
+.slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; /* background-color: #ccc; */ transition: .4s; } /* Diatur tema */
+.slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 1%; bottom: 1px; /* background-color: white; */ transition: .4s; } /* Diatur tema */
+input:checked + .slider:before { transform: translateX(15px); }
+.slider.round { border-radius: 24px; }
+.slider.round:before { border-radius: 50%; }
+
+/* Tombol Layout */
+.layout-options { display: flex; flex-wrap: wrap; gap: 10px; }
+.layout-button {
+    padding: 8px 12px;
+    cursor: pointer;
+    border-width: 1px;
+    border-style: solid;
+    border-radius: 4px;
+    transition: background-color 0.2s, border-color 0.2s;
+}
+
+/* --- Ikon Settings & Slider --- */
+/* Kontainer ikon settings (animasi) */
+/* #right-panel .settings-icons {
+/* Kontainer ikon settings di panel kanan, di dalam #top-bar-global-settings */
+#top-bar-global-settings #font-color-opacity-settings .settings-icons {
+    display: flex;
+    justify-content: space-around; 
+    flex-wrap: wrap; 
+    padding: 10px;
+    box-sizing: border-box;
+    /* overflow: hidden; */
+    transition: max-height 0.4s ease-in-out,
+                opacity 0.4s ease-in-out 0.1s,
+                visibility 0s 0s;
+    /* border-bottom: 1px solid #ddd;  */
+} 
+.icon-setting {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+    padding: 5px;
+    width: 48px; /* Lebar dari definisi kedua */
+    height: 52px; /* Tinggi dari definisi kedua */
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+    gap: 5px; /* Jarak dari index.html */
+    box-sizing:border-box;
+    border-style:inset;
+    border-width: 2px 2px;
+}
+.icon-setting img {
+    width: 32px;
+    height: 32px;
+    margin-bottom: 0; 
+    opacity: 0.8; 
+    transition: opacity 0.2s;
+}
+.icon-setting img:hover {
+    opacity: 1; /* Hover dari index.html */
+}
+.icon-setting span { /* Label di bawah ikon */
+    font-size: 14px;
+}
+    .icon-setting .slider-container { /* Kontainer slider di bawah ikon */
+    display: flex; /* Style dari index.html */
+    flex-direction: column;
+    align-items: center;
+    /* gap: 2px; Gap akan diatur oleh margin pada slider saat muncul*/
+    font-size: 0.8em; /* Style dari index.html */
+    width: 100%; /* Lebar dari definisi kedua */
+    /* min-height diperlukan agar ada ruang untuk label bergerak, sesuaikan jika perlu */
+    /* Contoh: tinggi label (misal 14px) + tinggi slider (8px) + gap (2px) = ~24px */
+    min-height: 24px; 
+}
+.icon-setting .slider-container label { /* Lebih spesifik ke label nilai di dalam slider-container */
+    min-width: auto; /* Hapus min-width agar bisa benar-benar di tengah */
+    font-size: 14px; /* Ukuran dari definisi kedua */
+    display: block; /* Display dari definisi kedua */
+    text-align: center; /* Hapus center jika ingin rata kanan */
+    transition: transform 0.2s ease-in-out;
+    /* Default: label diposisikan lebih rendah, seolah di tempat slider */
+    transform: translateY(-5px); /* 8px (tinggi slider) + 2px (jarak yang diinginkan) */
+}
+.icon-setting input[type="range"] { /* Style umum slider */
+    width: 60px; /* Lebar dari index.html */
+    -webkit-appearance: none;
+    outline: none;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none; /* Tidak bisa diklik saat tersembunyi */
+    /* Transisi untuk opacity dan visibility (visibility di-delay saat menghilang) */
+    transition: opacity 0.2s ease-in-out, visibility 0s linear 0.2s;
+    border-radius: 5px;
+    height: 0; /* Defaultnya tidak memakan ruang vertikal */
+    overflow: hidden; /* Pastikan konten terpotong saat height 0 */
+    margin-top: 0; /* Tidak ada margin atas saat tersembunyi */
+    transition: opacity 0.2s ease-in-out,
+                height 0.2s ease-in-out,
+                margin-top 0.2s ease-in-out,
+                visibility 0s linear 0.2s;
+}
+/* Tampilkan slider saat .icon-setting di-hover atau mendapat fokus (termasuk fokus pada slider itu sendiri) */
+.icon-setting:hover .slider-container label,
+.icon-setting:focus-within .slider-container label {
+    transform: translateY(10px); /* Label "naik" ke posisi normal */
+}
+
+.icon-setting:hover input[type="range"],
+.icon-setting:focus-within input[type="range"] {
+    opacity: 0.7; /* Opacity asli saat slider terlihat */
+    visibility: visible;
+    pointer-events: auto; /* Bisa diklik saat terlihat */
+    transition-delay: 0s; /* Hapus delay transisi agar langsung terlihat */
+    height: 10px; /* Tinggi slider saat terlihat */
+    margin-top: 2px; /* Jarak antara label dan slider saat slider muncul */
+}
+.icon-setting input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    border-radius: 50%;
+}
+.icon-setting input[type="range"]::-moz-range-thumb { /* Styling untuk Firefox */
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    border-radius: 50%;
+    border: none; /* Menghilangkan border default Firefox */
+    /* background-color akan diatur oleh theme.css */
+}
+.icon-setting input[type="color"] { /* Style color picker */
+    padding: 0;
+    /* Sembunyikan input warna secara visual namun tetap fungsional untuk JS */
+    opacity: 0;
+    position: absolute; /* Keluarkan dari alur normal agar tidak memakan ruang */
+    width: 1px;         /* Ukuran minimal */
+    height: 1px;
+    border: none;       /* Hilangkan border */
+    overflow: hidden;   /* Pastikan tidak ada bagian yang terlihat */
+}
+
+/* ======================================== */
+/* ==       Style Teks & Formatting      == */
+/* ======================================== */
+
+.not-angka { font-family: 'Not-Angka'; }
+.lyric { font-family: sans-serif; }
+.italic { font-style: italic; }
+.bold { font-weight: bold; }
+.verse { /* Link ayat */
+    text-decoration: underline;
+    cursor: help; /* Kursor dari definisi kedua */
+}
+
+/* Style dasar untuk paragraf di preview dan display */
+.paragraph {
+    cursor: pointer;
+    margin: 5px 0; /* Jarak atas/bawah antar paragraf */
+    padding: 8px;  /* Padding di dalam paragraf */
+    border-width: 1px; /* Border color diatur tema */
+    border-style: solid;
+    border-radius: 3px; /* Sedikit lengkungan sudut (opsional) */
+    transition: background-color 0.2s, border-color 0.2s; /* Transisi halus */
+}
+
+/* ======================================== */
+/* ==     Style Item Aktif (Hotkey)      == */
+/* ======================================== */
+
+/* Selector lebih spesifik untuk menghindari konflik */
+#preview .paragraph.active-group,
+#display-tab .paragraph.active-group,
+#alkitab-tab .verse-result.active-group {
+    border-left-width: 4px; /* Style spesifik untuk active-group */
+    border-left-style: solid;
+}
+
+/* Pastikan hover tidak mengalahkan active */
+#preview .paragraph.active-group:hover,
+#display-tab .paragraph.active-group:hover,
+#alkitab-tab .verse-result.active-group:hover {
+}
+
+/* Style .selected (jika berbeda dari .active-group) */
+.paragraph.selected {
+    background-color: #cce5ff; /* Warna highlight dari definisi kedua */
+    border-color: #b8daff; /* Border dari definisi kedua */
+}
+
+/* ======================================== */
+/* ==          Style Lain-lain           == */
+/* ======================================== */
+
+.content-group {
+    /* border: 1px dashed #ccc; */
+    border-width: 1px;
+    border-style: dashed; /* Border color diatur tema */
+    padding: 10px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.icon {
+    width: 10%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+}
+.icon img {
+    width: 60px;
+    height: 60px;
+}
+
+/* Style .button (untuk display on/off?) */
+.button {
+    width: 6%;
+    font-size: 100%;
+    text-decoration-line: overline;
+    text-align: center;
+}
+.button span {
+    display: inline-block;
+    writing-mode: vertical-lr;
+    text-orientation: upright;
+}
+

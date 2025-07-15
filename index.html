@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Control Panel</title>
+    <link href="css/theme.css" rel="stylesheet">
+    <link href="css/cp.css" rel="stylesheet">
+    <link href="css/slideshow.css" rel="stylesheet">
+    <link href="css/save.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Kontainer Utama -->
+    <div id="main-container">
+        <!-- Panel Kiri -->
+        <div id="left-panel">
+            <span id="theme-switch" title="Ganti Tema">🌙</span> <!-- Ikon Pengalih Tema -->
+            <div class="toggle-label" onclick="toggleLeftPanel()">TAMPILKAN...</div>
+
+            <!-- === KONTENER BARU UNTUK PENGATURAN SAAT FULLSCREEN === -->
+            <div id="left-panel-fullscreen-configs">
+                <!-- 1. Pengaturan Layout Screen (Dipindahkan dari Right Panel) -->
+                <div id="layout-screen-config-container" class="setting-group">
+                    <!-- <div class="layout-options"> -->
+                         <button class="layout-button" data-layout="fullscreen">Full Screen</button>
+                         <button class="layout-button" data-layout="split-50">Split 50:50</button>
+                         <button class="layout-button" data-layout="split-70">Split 70:30</button>
+                         <button class="layout-button" data-layout="camera">Full Camera</button>
+                    <!-- </div> -->
+                </div>
+                <div class="horizontal-settings-group"> <!-- Wrapper untuk item horizontal -->
+                    <div class="setting-item">
+                        <label class="switch">
+                            <input type="checkbox" id="settingScreenToggle">
+                            <span class="slider round"></span>
+                        </label>
+                        <span>Global Display</span>
+                    </div>
+                    <div class="setting-item">
+                        <label class="switch">
+                            <input type="checkbox" id="settingLogoToggle">
+                            <span class="slider round"></span>
+                        </label>
+                        <span>Logo Gereja</span>
+                    </div>
+                    <div class="setting-item">
+                        <label class="switch">
+                            <input type="checkbox" id="settingTextToggle">
+                            <span class="slider round"></span>
+                        </label>
+                        <span>Teks/ Lirik</span>
+                    </div>
+                </div>
+            </div>
+
+            <textarea id="editor" placeholder="Ketik di sini..."></textarea>
+            <div id="file-loader">
+                <button id="loadButton"><img src="image/icon/load-icon.png" alt="">Buka File</button>
+                <button id="newButton"><img src="image/icon/cleaning-icon.png" alt="">Bersihkan</button>
+                <button id="saveFileButton" disabled><img src="image/icon/save-icon.png" alt=""> Simpan</button>
+                <span id="file-status">Dokumen baru</span>
+            </div>
+            <div id="preview"></div>
+        </div>
+
+        <!-- Kontainer untuk Resizer dan Tombol -->
+        <div id="resizer-container">
+            <div id="resizer"></div>
+        </div>
+
+        <!-- Panel Kanan -->
+        <div id="right-panel">
+            <!-- === KONTENER BARU UNTUK PENGATURAN GLOBAL DI ATAS TAB === -->
+            <div id="top-bar-global-settings">
+                <div id="font-color-opacity-settings" class="setting-group" style="width: 100%;"> <!-- Beri ID baru dan pastikan mengambil lebar penuh jika perlu -->
+                    <h2>PENGATURAN WARNA/ TEKS</h2> 
+                    <div class="settings-icons"> <!-- Pastikan class ini ada untuk styling dari cp.css -->
+                        <!-- Ikon Outline Width -->
+                        <div class="icon-setting" id="outlineWidthContainer">
+                            <img src="image/icon/outline-icon.png" alt="Tebal Outline" title="Tebal Outline (0 = tidak ada)">
+                            <div class="slider-container">
+                                <input type="range" id="outlineWidthSettingInput" min="0" max="10" step="0.5" value="0" oninput="updateOutlineWidth(this.value)">
+                                <label id="outlineWidthValue">0px</label>
+                            </div>
+                        </div>
+                        <!-- Ikon Outline Color -->
+                        <div class="icon-setting">
+                            <img src="image/icon/outline-color-icon.png" alt="Warna Outline" title="Outline Color" onclick="document.getElementById('outlineColorSettingInput').click()">
+                            <input type="color" id="outlineColorSettingInput" value="#000000" style="width: 30px; height: 20px; border: none; padding: 0; vertical-align: middle;" oninput="updateStyle()">
+                        </div>
+                        <!-- Ikon Font Size -->
+                        <div class="icon-setting" id="fontSizeContainer">
+                            <img src="image/icon/font-size-icon.png" alt="Font Size" title="Font Size">
+                            <div class="slider-container">
+                                <input type="range" id="fontSizeSlider" min="22" max="150" value="80" step="2" oninput="updateFontSize(this.value)">
+                                <label id="fontSizeValue">80px</label>
+                            </div>
+                        </div>
+                        <!-- Ikon Font Color -->
+                        <div class="icon-setting" title="Font Color" onclick="document.getElementById('fontColor-picker').click()">
+                            <img src="image/icon/font-color-icon.png" alt="Font Color" title="Font Color">
+                            <span></span>
+                            <input type="color" id="fontColor-picker" class="color-picker" style="width: 30px; height: 20px; border: none; padding: 0; vertical-align: middle;" oninput="updateStyle()">
+                        </div>
+                        <!-- Ikon Background Color -->
+                        <div class="icon-setting" title="Background Color" onclick="document.getElementById('bgColor-picker').click()">
+                            <img src="image/icon/bg-color-icon.png" alt="Background Color">
+                            <input type="color" id="bgColor-picker" class="color-picker" style="width: 30px; height: 20px; border: none; padding: 0; vertical-align: middle;" oninput="updateStyle()">
+                        </div>
+                        <!-- Ikon Opacity -->
+                        <div class="icon-setting" id="OpacityContainer">
+                            <img src="image/icon/opacity-icon.png" alt="Opacity">
+                            <div class="slider-container">
+                                <input type="range" id="OpacityValueSlider" min="0" max="100" value="50" step="1" oninput="updateOpacity(this.value)">
+                                <label id="opacity">50%</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Container Tab -->
+            <div class="tab-container">
+                <button class="tab-button active" onclick="switchTab('display', this)" data-tab-id="display">EDIT/DISPLAY</button>
+                <button class="tab-button" onclick="switchTab('alkitab', this)" data-tab-id="alkitab">ALKITAB</button>
+                <button class="tab-button" onclick="switchTab('notation', this)" data-tab-id="notation">HOWTO</button>
+           </div>
+
+           <!-- Container Konten Tab -->
+           <div class="tab-content-container">
+               <div id="display-tab" class="tab-content active" tabindex="-1">
+                   <!-- ... konten display ... -->
+                   <p style="padding: 20px; text-align: center; color: #777;">
+                       Gunakan area teks di panel kiri untuk mengetik atau memuat konten.<br>
+                       Pratinjau akan muncul di bawah area teks.<br>
+                       Klik tombol "TAMPILKAN..." di panel kiri untuk mode layar penuh pratinjau dan akses pengaturan layout/tampilan.
+                   </p>
+               </div>
+               <div id="alkitab-tab" class="tab-content" tabindex="-1">
+                   <div class="search-container">
+                    <input type="text" id="search-input" placeholder="Cari ayat (contoh: Matius 5:1 atau Matius 5:1,2)" onkeypress="handleSearchInput(event)">
+                    <select id="translation" onchange="handleSearchInput()">
+                        <option value="tb">Terjemahan Baru (TB)</option>
+                        <option value="bis">Bahasa Indonesia Sehari-hari (BIS)</option>
+                        <option value="nkjv">New King James Version</option>
+                        <option value="ESV">English Standard version</option>
+                        <option value="Toba">Bahasa Batak Toba</option>
+                        <option value="Jawa2006">Bahasa Jawa</option>
+                        <option value="Karo">Bahasa Batak Karo</option>
+                        <option value="Toraja">Bahasa Toraja</option>
+                        <option value="AVB">Alkitab Versi Borneo</option>
+                        <option value="Ngaju">Bahasa Dayak Ngaju</option>
+                    </select>
+                   </div>
+                   <div id="search-results"></div>
+               </div>
+               <div id="notation-tab" class="tab-content">
+                   <div class="slideshow-container">
+                        <h4>TATA CARA MENULIS NOT ANGKA</h4>
+                            <p>Simbol-simbol di bawah ini dipakai untuk menampilkan not angka. Kolom "Input" adalah karakater yang diketik/ditekan sedangkan kolom "Output" adalah tampilannya di layar. Contoh: </p>
+                                <table>
+                                    <tr>
+                                        <td>&nbsp&nbsp Ke-su-ka-an &nbsp &nbsp &nbspba-gi  du-nia</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="not-angka">&nbsp a1 j7j k.6| 5 j.k 4| 3 2|1 0_</td>
+                                        <td> Ini adalah Output / tampilan yang diharapkan</td>
+                                    </tr>
+                                    <tr>
+                                        <td> %a1 j7j k.6| 5 j.k 4| 3 2| 1 0 _%</td>
+                                        <td>Ini adalah Input/ karakter yang diketik</td>
+                                    </tr>
+                                </table>
+                            <p> Catatan: Penulisan not angka harus diawali dan diakhiri dengan karakter '%'</p>
+                        <div class="mySlides fade"><img src="image/notation/notation.jpg" style="width:100%"></div>
+                        <div class="mySlides fade"><img src="image/notation/notation2.jpg" style="width:100%"></div>
+                        <div class="mySlides fade"><img src="image/notation/notation3.jpg" style="width:100%"></div>
+                        <div class="mySlides fade"><img src="image/notation/notation4.jpg" style="width:100%"></div>
+                        <div class="mySlides fade"><img src="image/notation/notation5.jpg" style="width:100%"></div>
+                        <a class="prev" onclick="plusSlides(-1)">&#10094;</a>
+                        <a class="next" onclick="plusSlides(1)">&#10095;</a>
+                    </div>
+                        <br>
+                    <div style="text-align:center">
+                        <span class="dot" onclick="currentSlide(1)"></span>
+                        <span class="dot" onclick="currentSlide(2)"></span>
+                        <span class="dot" onclick="currentSlide(3)"></span>
+                        <span class="dot" onclick="currentSlide(4)"></span>
+                        <span class="dot" onclick="currentSlide(5)"></span>
+                    </div>
+               </div>
+           </div> <!-- Akhir tab-content-container -->
+        </div>
+    </div> <!-- Akhir main-container -->
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        // Temukan semua elemen .icon-setting yang ada di halaman
+        const iconSettings = document.querySelectorAll('.icon-setting');
+    
+        iconSettings.forEach(iconSettingElement => {
+            // Di dalam setiap .icon-setting, cari input color picker-nya
+            const colorInput = iconSettingElement.querySelector('input[type="color"]');
+    
+            if (colorInput) {
+                // Fungsi untuk memperbarui warna latar belakang .icon-setting
+                const updateBackgroundColor = () => {
+                    iconSettingElement.style.backgroundColor = colorInput.value;
+                };
+    
+                // 1. Atur warna latar belakang awal saat halaman dimuat
+                //    berdasarkan nilai default dari color picker.
+                updateBackgroundColor();
+    
+                // 2. Tambahkan event listener ke color picker.
+                //    Setiap kali nilainya berubah (pengguna memilih warna baru),
+                //    panggil fungsi untuk memperbarui latar belakang.
+                colorInput.addEventListener('input', updateBackgroundColor);
+    
+                // 3. Karena input warna disembunyikan, buat agar seluruh area .icon-setting
+                //    (termasuk gambar ikon dan teksnya) bisa diklik untuk memunculkan
+                //    dialog pemilihan warna.
+                iconSettingElement.addEventListener('click', (event) => {
+                    // Hindari memicu ulang jika pengguna secara tidak sengaja mengklik
+                    // elemen interaktif lain di dalam .icon-setting (misalnya, slider).
+                    // Kita hanya ingin memicu jika klik dilakukan pada area umum ikon, gambar, atau labelnya.
+                    if (event.target.type === 'color' || event.target.type === 'range' || event.target.closest('.slider-container')) {
+                        return; // Jangan lakukan apa-apa jika klik pada input warna itu sendiri atau slider
+                    }
+                    // Secara programatik, klik input warna yang tersembunyi
+                    colorInput.click();
+                });
+            }
+        });
+    });
+    </script>
+    <script src="bible_tb.js"></script>
+    <script src="js/cp.js"></script>
+    <script src="js/theme.js"></script>
+    <script src="js/hotkey.js"></script>
+    <script src="js/slideshow.js"></script>
+    <script src="js/file_handler.js"></script>
+    <script src="js/save.js"></script>
+    <script src="js/panel_resizer.js"></script>
+</body>
+</html>

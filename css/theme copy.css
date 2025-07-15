@@ -1,0 +1,778 @@
+
+#theme-switch {
+    position: absolute;
+    top: 0px;
+    left: 10px;
+    font-size: 1.8em;
+    cursor: pointer;
+    z-index: 10;
+    user-select: none;
+    transition: transform 0.2s ease-in-out;
+}
+#theme-switch:hover {
+    transform: scale(1.1);
+}
+
+/* Beri sedikit ruang untuk toggle-label */
+#left-panel .toggle-label {
+    padding-left: 40px;
+    position: relative;
+    z-index: 1;
+}
+
+/* ======================================== */
+/* ==           Tema Terang (Cerah)      == */
+/* ======================================== */
+
+.light-theme {
+    /* Warna Latar Belakang Utama */
+    --main-bg-color: #FDFEFF; /* Sedikit kebiruan, sangat terang */
+    --panel-bg-color: #FFFFFF; /* Panel putih bersih */
+    --content-bg-color: #FFFFFF; /* Konten tab, editor, dan PREVIEW putih bersih */
+    --tab-bar-bg: #F0F4F8; /* Bar tab abu-abu kebiruan muda */
+    --tab-active-bg: #e6e4e4; /* Tab aktif putih */
+    --resizer-color: #DDE2E6; /* Resizer abu-abu sedikit lebih terang */
+    --border-color: #E1E8ED; /* Border umum abu-abu kebiruan muda */
+    --highlight-bg: #E0F0FF; /* Highlight biru sangat muda */
+    --highlight-border: #5C9AFF; /* Border highlight biru lebih cerah */
+    --button-bg: #F8F9FA; /* Tombol abu-abu sangat terang */
+    --button-hover-bg: #E9ECEF; /* Hover tombol sedikit lebih gelap */
+    --button-active-bg: #6755c9; /* Biru cerah untuk tombol aktif */
+    --button-active-text: #FFFFFF;
+    --layout-button-bg: #f8f8f8;
+    --layout-button-hover-bg: #e8e8e8;
+    --layout-button-active-bg: #6755c9;
+    --layout-button-active-text: white;
+    --modal-overlay-bg: rgba(0, 0, 0, 0.5);
+    --modal-resize-handle-border: #aeaeae;
+    --paragraph-hover-bg: #E9ECEF; /* Warna hover yang lebih netral */
+    --active-group-bg: var(--highlight-bg);
+    --active-group-border: var(--highlight-border);
+    --active-group-hover-bg: #D0E0F0; /* Sedikit lebih gelap dari highlight-bg */
+    --active-group-hover-text: var(--main-text-color);
+    --verse-selected-bg: #e0f7fa; /* Warna spesifik dari cp.css */
+    --verse-selected-border: #00008b; /* Warna spesifik dari cp.css */
+
+    /* Warna Teks */
+    --main-text-color: #1C1E21; /* Hitam pekat untuk kontras tinggi */
+    --secondary-text-color: #5A6268; /* Abu-abu sedikit lebih gelap untuk kontras */
+    --link-color: #1a78e3; /* Biru link yang cerah */
+    --button-text-color: #1C1E21;
+
+    /* Warna Teks Khusus */
+
+    --verse-title-color: var(--secondary-text-color);
+    --chapter-title-color: var(--main-text-color);
+    --notation-table-text-color: var(--main-text-color);
+    --notation-table-secondary-text-color: var(--secondary-text-color);
+    --setting-header-color: var(--main-text-color);
+    --setting-header-small-color: var(--secondary-text-color);
+    --setting-item-text-color: var(--main-text-color);
+    --icon-setting-label-color: var(--secondary-text-color);
+    --slider-label-color: var(--secondary-text-color);
+    --file-status-color: var(--secondary-text-color);
+    --h3-color: var(--main-text-color);
+
+    /* Warna Input/Form */
+    --input-bg: #FFFFFF;
+    --input-border: #CED4DA; /* Border input standar */
+    --input-text: #343A40; /* Teks input lebih gelap */
+    --toggle-switch-bg: #ccc;
+    --toggle-switch-checked-bg: #6755c9;
+    --toggle-switch-knob-bg: white;
+    --toggle-switch-focus-shadow: #6755c9;
+
+    /* Warna Khusus */
+    --error-color: #D93025; /* Merah error yang jelas */
+    --modified-border: #FBC02D; /* Kuning cerah untuk border modifikasi */
+    --text-bg-start: rgba(255, 255, 255, 0.85); /* Warna awal gradasi background teks (putih semi-transparan) */
+    --lower-third-bg-start: rgba(0, 123, 255, 0.7); /* Warna awal gradasi lower-third (biru semi-transparan) */
+}
+
+.light-theme body {
+    background-color: var(--main-bg-color);
+    color: var(--main-text-color);
+}
+.light-theme #left-panel-fullscreen-configs {
+    border-bottom-color: var(--border-color);
+}
+.light-theme #layout-screen-config-container,
+.light-theme #display-appearance-config-container {
+    border-color: var(--border-color);
+    background-color: var(--panel-bg-color); /* Atau --main-bg-color jika ingin beda */
+}
+.light-theme #top-bar-global-settings {
+    border-bottom-color: var(--border-color);
+    /* color: var(--main-text-color); */
+    background-color: #565656;
+    color: transparent;
+    text-shadow: 2px 2px 3px rgba(255,255,255,0.5);
+    -webkit-background-clip: text;
+        -moz-background-clip: text;
+            background-clip: text;
+}
+
+.light-theme #left-panel,
+.light-theme #right-panel {
+    background-color: var(--panel-bg-color);
+    /* border-color: var(--border-color); */
+    border: 1px solid var(--border-color);
+}
+.light-theme #editor,
+.light-theme #preview,
+.light-theme .tab-content {
+    background-color: var(--content-bg-color);
+    color: var(--main-text-color);
+    border: 1px solid var(--border-color);
+}
+.light-theme #editor.modified {
+    border-color: var(--modified-border);
+}
+.light-theme #resizer {
+    background-color: var(--resizer-color);
+    border-left-color: var(--border-color);
+    border-right-color: var(--border-color);
+}
+.light-theme #resizer:hover {
+    background-color: var(--resizer-hover-color);
+}
+.light-theme .tab-container {
+    background-color: var(--tab-bar-bg);
+    border-bottom-color: var(--border-color);
+}
+.light-theme .tab-button {
+    background-color: inherit;
+    color: var(--button-text-color);
+    border-right: 1px solid var(--border-color);
+}
+body.light-theme #right-panel .tab-container .tab-button:hover {
+    background-color: var(--button-hover-bg); /* Menggunakan variabel hover tombol umum */
+}
+
+body.light-theme #right-panel .tab-container .tab-button.active {
+    background-color: var(--button-active-bg); /* Menggunakan warna aktif tombol utama */
+    color: var(--button-active-text); /* Menggunakan warna teks tombol aktif utama */
+    border-bottom-color: var(--button-active-bg); /* Indikator warna primer */
+}
+.light-theme input[type="text"],
+.light-theme select,
+.light-theme textarea { /* Termasuk textarea */
+    background-color: var(--input-bg);
+    border: 1px solid var(--input-border);
+    color: var(--input-text);
+}
+/* Style placeholder untuk input di light theme */
+.light-theme input::placeholder,
+.light-theme textarea::placeholder {
+    color: var(--secondary-text-color);
+    opacity: 0.7;
+}
+.light-theme button,
+.light-theme .file-loader-button { /* Ganti jika nama class berbeda */
+    background-color: var(--button-bg);
+    color: var(--button-text-color);
+    border: 1px solid var(--input-border);
+}
+.light-theme button:hover,
+.light-theme .file-loader-button:hover {
+    background-color: var(--button-hover-bg);
+}
+.light-theme .layout-button {
+    background-color: var(--layout-button-bg);
+    color: var(--button-text-color);
+    border-color: var(--input-border);
+}
+.light-theme .layout-button:hover {
+    background-color: var(--layout-button-hover-bg);
+}
+.light-theme .layout-button.active {
+    background-color: var(--button-active-bg);
+    color: var(--button-active-text);
+    border-color: var(--button-active-bg);
+}
+.light-theme #file-loader button:disabled {
+    background-color: #343a40;
+    color: #6c757d;
+    cursor: not-allowed;
+}
+
+.light-theme .verse-result,
+.light-theme .paragraph {
+    border: 1px solid var(--border-color);
+    background-color: var(--content-bg-color); /* Atau warna lain jika perlu */
+}
+.light-theme .verse-result:hover,
+.light-theme .paragraph:hover {
+    background-color: var(--paragraph-hover-bg);
+}
+.light-theme .verse-result.selected {
+    background-color: var(--verse-selected-bg);
+    border-color: var(--verse-selected-border);
+}
+.light-theme .verse-result.active-group,
+.light-theme .paragraph.active-group {
+    background-color: var(--highlight-bg);
+    border-left-color: var(--highlight-border);
+    border-top-color: var(--border-color);
+    border-right-color: var(--border-color);
+    border-bottom-color: var(--border-color);
+}
+.light-theme .verse-result.active-group:hover,
+.light-theme .paragraph.active-group:hover {
+    background-color: var(--active-group-hover-bg);
+    color: var(--active-group-hover-text);
+}
+
+.light-theme .setting-group {
+    background-color: rgba(0, 0, 0, 0.1); /* Background transparan gelap */
+    border-color: var(--border-color);
+}
+.light-theme .setting-item {
+    border-bottom-color: var(--border-color);
+}
+
+.light-theme .toggle-label {
+    background-color: var(--button-bg);
+    /* color: var(--secondary-text-color); */
+    background-color: #565656;
+    color: transparent;
+    text-shadow: 2px 2px 3px rgba(255,255,255,0.5);
+    -webkit-background-clip: text;
+        -moz-background-clip: text;
+            background-clip: text;
+}
+.light-theme .toggle-label:hover {
+    background-color: var(--button-hover-bg);
+}
+
+/* Toggle Switch light */
+.light-theme .slider { background-color: var(--toggle-switch-bg); }
+.light-theme input:checked + .slider { background-color: var(--toggle-switch-checked-bg); }
+.light-theme input:focus + .slider { box-shadow: 0 0 1px var(--toggle-switch-focus-shadow); }
+.light-theme .slider:before { background-color: var(--toggle-switch-knob-bg); }
+
+/* Slider Range light */
+.light-theme .icon-setting input[type="range"] {
+    background: var(--input-bg);
+}
+.light-theme .icon-setting input[type="range"]::-webkit-slider-thumb {
+    background-color: var(--button-active-bg);
+}
+.light-theme .icon-setting input[type="range"]::-moz-range-thumb { /* Firefox */
+    background-color: var(--button-active-bg);
+}
+
+/* Color Picker light (Mungkin perlu penyesuaian lebih lanjut tergantung implementasi) */
+.light-theme .icon-setting input[type="color"] {
+    border-color: var(--input-border);
+}
+
+/* Teks Khusus light */
+.light-theme .verse-title { color: var(--verse-title-color); }
+.light-theme .chapter-title {
+    color: var(--chapter-title-color);
+    border-bottom-color: var(--border-color);
+}
+.light-theme #notation-tab table td { color: var(--notation-table-text-color); border-color: var(--border-color); }
+.light-theme #notation-tab table td:nth-child(2) { color: var(--notation-table-secondary-text-color); }
+.light-theme #setting-tab { color: var(--main-text-color); }
+/* .light-theme #setting-tab h4 {
+    color: var(--setting-header-color);
+    border-bottom-color: var(--border-color);
+}
+.light-theme #setting-tab h4 small { color: var(--setting-header-small-color); } */
+.light-theme .setting-item span { color: var(--setting-item-text-color); }
+/* .light-theme .icon-setting span { color: var(--icon-setting-label-color); } */
+.light-theme .icon-setting label { color: var(--slider-label-color); }
+.light-theme .layout-button {
+    background-color: var(--button-bg);
+    color: var(--button-text-color);
+    border: 1px solid var(--input-border);
+}
+.light-theme .layout-button:hover {
+    background-color: var(--button-hover-bg);
+}
+.light-theme .layout-button.active {
+    background-color: var(--layout-button-active-bg); /* Menggunakan variabel spesifik layout */
+    color: var(--layout-button-active-text);
+    border-color: var(--layout-button-active-bg); /* Samakan border dengan background */
+}
+.light-theme .verse { color: var(--link-color); }
+.light-theme a { color: var(--link-color); }
+.light-theme div h3 { color: var(--h3-color); }
+
+/* Error/Loading States light */
+.light-theme .verse-result.error {
+    color: var(--error-color);
+    border-color: var(--error-color);
+}
+.light-theme .verse-result.loading {
+    color: var(--secondary-text-color);
+}
+
+/* Penyesuaian kecil lainnya untuk light theme jika perlu */
+.light-theme #file-status {
+    color: var(--secondary-text-color);
+}
+
+.light-theme .icon-setting {
+    border-color:var(--button-bg);
+}
+.light-theme .icon-setting label {
+    color: var(--secondary-text-color);
+}
+
+/* Content Group (jika masih digunakan) */
+.light-theme .content-group {
+    border-color: var(--border-color);
+}
+.light-theme .content-group:hover {
+    background-color: var(--button-bg);
+}
+
+/* ======================================== */
+/* ==           Tema Gelap               == */
+/* ======================================== */
+.dark-theme {
+    /* Warna Latar Belakang Utama */
+    --main-bg-color: #1A1A1A; /* Hitam keabuan sangat gelap */
+    --panel-bg-color: #2C2C2C; /* Panel abu-abu gelap */
+    --content-bg-color: #2C2C2C; /* Konten tab sama dengan panel */
+    --tab-bar-bg: #212121; /* Bar tab lebih gelap */
+    --tab-active-bg: #383838; /* Tab aktif sedikit lebih terang */
+    --resizer-color: #495057; /* Resizer abu-abu gelap */
+    --border-color: #444; /* Border umum abu-abu gelap */
+    --highlight-bg: #0f3370; /* Highlight biru gelap keabuan */
+    --highlight-border: #8AB4F8; /* Border highlight biru terang */
+    --button-bg: #495057;
+    --button-hover-bg: #5A6268;
+    --button-active-bg: #52f611; /* Biru terang untuk tombol aktif */
+    --button-active-text: #1A1A1A;
+    --layout-button-bg: #495057;
+    --layout-button-hover-bg: #5A6268;
+    --layout-button-active-bg: #8AB4F8;
+    --layout-button-active-text: #1A1A1A;
+    --modal-overlay-bg: rgba(0, 0, 0, 0.7);
+    --modal-resize-handle-border: #777777;
+    --paragraph-hover-bg: var(--button-bg); /* Atau #333 jika ingin lebih gelap dari button */
+    --active-group-bg: var(--highlight-bg);
+    --active-group-border: var(--highlight-border);
+    --active-group-hover-bg: #2a60bd; /* Warna hover sedikit lebih terang dari highlight */
+    --active-group-hover-text: #FFFFFF;
+    --verse-selected-bg: #1a5265; /* Versi gelap dari #e0f7fa */
+    --verse-selected-border: #6fa3f7; /* Versi terang dari #00008b, cocok dengan link */
+
+    /* Warna Teks */
+    --main-text-color: #ecece9; /* Putih keabuan terang */
+    --secondary-text-color: #cdccc8; /* Abu-abu terang untuk teks sekunder */
+    --link-color: #8AB4F8; /* Biru terang untuk link */
+    --button-text-color: #E9ECEF;
+
+    /* Warna Teks Khusus */
+    --verse-title-color: var(--secondary-text-color);
+    --chapter-title-color: var(--main-text-color);
+    --notation-table-text-color: var(--main-text-color);
+    --notation-table-secondary-text-color: var(--secondary-text-color);
+    --setting-header-color: var(--main-text-color);
+    --setting-header-small-color: var(--secondary-text-color);
+    --setting-item-text-color: var(--main-text-color);
+    --icon-setting-label-color: var(--secondary-text-color);
+    --slider-label-color: var(--secondary-text-color);
+    --file-status-color: var(--secondary-text-color);
+    --h3-color: var(--main-text-color);
+
+    /* Warna Input/Form */
+    --input-bg: #343A40;
+    --input-border: #5A6268;
+    --input-text: #E9ECEF;
+    --toggle-switch-bg: #5A6268;
+    --toggle-switch-checked-bg: #52f611;
+    --toggle-switch-knob-bg: #343A40;
+    --toggle-switch-focus-shadow: #8AB4F8;
+
+    /* Warna Khusus */
+    --error-color: #F88379; /* Merah muda untuk error */
+    --modified-border: #FFD700; /* Emas untuk border modifikasi */
+    --text-bg-start: rgba(40, 40, 45, 0.85); /* Warna awal gradasi background teks (abu gelap semi-transparan) */
+    --lower-third-bg-start: rgba(50, 60, 80, 0.7); /* Warna awal gradasi lower-third (abu gelap semi-transparan) */
+}
+/* Terapkan variabel ke elemen di tema gelap */
+.dark-theme body {
+    background-color: var(--main-bg-color);
+    color: var(--main-text-color);
+}
+
+.dark-theme #left-panel-fullscreen-configs {
+    border-bottom-color: var(--border-color);
+}
+.dark-theme #layout-screen-config-container,
+.dark-theme #display-appearance-config-container {
+    border-color: var(--border-color);
+    background-color: var(--panel-bg-color); /* Atau --main-bg-color */
+}
+.dark-theme #top-bar-global-settings {
+    border-bottom-color: var(--border-color);
+    /* color: var(--main-text-color);
+    text-shadow: -1px -1px 1px rgba(255, 255, 255, 0.7),
+  2px 2px 2px rgba(0, 0, 0, 0.4); Create the embossed effect */
+    background-color: #efefef;
+    color: transparent;
+    text-shadow: 2px 2px 3px rgba(148, 145, 145, 0.5);
+    -webkit-background-clip: text;
+        -moz-background-clip: text;
+            background-clip: text;
+    }
+
+.dark-theme #left-panel,
+.dark-theme #right-panel {
+    background-color: var(--panel-bg-color);
+    /* border-color: var(--border-color); */
+    border: 1px solid var(--border-color);
+}
+
+.dark-theme #editor,
+.dark-theme #preview,
+.dark-theme .tab-content {
+    background-color: var(--content-bg-color);
+    color: var(--main-text-color);
+    border: 1px solid var(--border-color);
+}
+.dark-theme #editor.modified {
+    border-color: var(--modified-border);
+}
+.dark-theme #resizer {
+    background-color: var(--resizer-color);
+    border-left-color: var(--border-color);
+    border-right-color: var(--border-color);
+}
+.dark-theme #resizer:hover {
+    background-color: var(--resizer-hover-color);
+}
+
+.dark-theme .tab-container {
+    background-color: var(--tab-bar-bg);
+    border-bottom-color: var(--border-color);
+}
+
+.dark-theme .tab-button {
+    background-color: inherit;
+    color: var(--button-text-color);
+    border-right: 1px solid var(--border-color);
+}
+body.dark-theme #right-panel .tab-container .tab-button:hover {
+    background-color: var(--tab-active-bg); /* Gunakan warna tab aktif untuk hover */
+}
+.dark-theme .tab-button.active {
+    background-color: var(--tab-active-bg);
+    color: var(--main-text-color);
+    border-bottom-color: var(--button-active-bg); /* Indikator warna primer */
+}
+.dark-theme input[type="text"],
+.dark-theme select,
+.dark-theme textarea { /* Termasuk textarea */
+    background-color: var(--input-bg);
+    border: 1px solid var(--input-border);
+    color: var(--input-text);
+}
+/* Style placeholder untuk input di dark theme */
+.dark-theme input::placeholder,
+.dark-theme textarea::placeholder {
+    color: var(--secondary-text-color);
+    opacity: 0.7;
+}
+.dark-theme button,
+.dark-theme .file-loader-button { /* Ganti jika nama class berbeda */
+    background-color: var(--button-bg);
+    color: var(--button-text-color);
+    border: 1px solid var(--input-border);
+}
+.dark-theme button:hover,
+.dark-theme .file-loader-button:hover {
+    background-color: var(--button-hover-bg);
+}
+.dark-theme .layout-button {
+    background-color: var(--layout-button-bg);
+    color: var(--button-text-color);
+    border-color: var(--input-border);
+}
+.dark-theme .layout-button:hover {
+    background-color: var(--layout-button-hover-bg);
+}
+.dark-theme .layout-button.active {
+    background-color: var(--button-active-bg);
+    color: var(--button-active-text);
+    border-color: var(--button-active-bg);
+}
+.dark-theme #file-loader button:disabled {
+    background-color: #343a40;
+    color: #6c757d;
+    cursor: not-allowed;
+}
+.dark-theme .verse-result,
+.dark-theme .paragraph {
+    border: 1px solid var(--border-color);
+    background-color: var(--content-bg-color); /* Atau warna lain jika perlu */
+}
+.dark-theme .verse-result:hover,
+.dark-theme .paragraph:hover {
+    background-color: var(--paragraph-hover-bg);
+}
+.dark-theme .verse-result.selected {
+    background-color: var(--verse-selected-bg);
+    border-color: var(--verse-selected-border);
+}
+.dark-theme .verse-result.active-group,
+.dark-theme .paragraph.active-group {
+    background-color: var(--highlight-bg);
+    border-left-color: var(--highlight-border);
+    border-top-color: var(--border-color);
+    border-right-color: var(--border-color);
+    border-bottom-color: var(--border-color);
+}
+.dark-theme .verse-result.active-group:hover,
+.dark-theme .paragraph.active-group:hover {
+    background-color: var(--active-group-hover-bg);
+    color: var(--active-group-hover-text);
+}
+.dark-theme .setting-group {
+    background-color: rgba(0, 0, 0, 0.1); /* Background transparan gelap */
+    border-color: var(--border-color);
+}
+.dark-theme .setting-item {
+    border-bottom-color: var(--border-color);
+}
+.dark-theme .toggle-label {
+    background-color: var(--button-bg);
+    /* color: var(--secondary-text-color); */
+    background-color: #ededed;
+    color: transparent;
+    text-shadow: 2px 2px 3px rgba(86, 86, 86, 0.5);
+    -webkit-background-clip: text;
+        -moz-background-clip: text;
+            background-clip: text;
+}
+.dark-theme .toggle-label:hover {
+    background-color: var(--button-hover-bg);
+}
+
+/* Toggle Switch Dark */
+.dark-theme .slider { background-color: var(--toggle-switch-bg); }
+.dark-theme input:checked + .slider { background-color: var(--toggle-switch-checked-bg); }
+.dark-theme input:focus + .slider { box-shadow: 0 0 1px var(--toggle-switch-focus-shadow); }
+.dark-theme .slider:before { background-color: var(--toggle-switch-knob-bg); }
+
+/* Slider Range Dark */
+.dark-theme .icon-setting {
+    border-color: var(--button-bg);
+}
+.dark-theme .icon-setting input[type="range"] {
+    background: var(--input-bg);
+}
+.dark-theme .icon-setting input[type="range"]::-webkit-slider-thumb {
+    background-color: var(--button-active-bg);
+}
+.dark-theme .icon-setting input[type="range"]::-moz-range-thumb { /* Firefox */
+    background-color: var(--button-active-bg);
+}
+
+/* Color Picker Dark (Mungkin perlu penyesuaian lebih lanjut tergantung implementasi) */
+.dark-theme .icon-setting input[type="color"] {
+    border-color: var(--input-border);
+}
+
+/* Teks Khusus Dark */
+.dark-theme .verse-title { color: var(--verse-title-color); }
+.dark-theme .chapter-title {
+    color: var(--chapter-title-color);
+    border-bottom-color: var(--border-color);
+}
+.dark-theme #notation-tab table td { color: var(--notation-table-text-color); border-color: var(--border-color); }
+.dark-theme #notation-tab table td:nth-child(2) { color: var(--notation-table-secondary-text-color); }
+.dark-theme #setting-tab { color: var(--main-text-color); }
+/* .dark-theme #setting-tab h4 {
+    color: var(--main-text-color);
+    /* border-bottom-color: var(--border-color); 
+} */
+.dark-theme .setting-item span { color: var(--setting-item-text-color); }
+/* .dark-theme .icon-setting span { color: var(--icon-setting-label-color); } */
+.dark-theme .icon-setting label { color: var(--slider-label-color); }
+.dark-theme .layout-button {
+    background-color: var(--button-bg);
+    color: var(--button-text-color);
+    border: 1px solid var(--input-border);
+}
+.dark-theme .layout-button:hover {
+    background-color: var(--button-hover-bg);
+}
+.dark-theme .layout-button.active {
+    background-color: var(--layout-button-active-bg); /* Menggunakan variabel spesifik layout */
+    color: var(--layout-button-active-text);
+    border-color: var(--layout-button-active-bg); /* Samakan border dengan background */
+}
+
+.dark-theme .verse { color: var(--link-color); }
+.dark-theme a { color: var(--link-color); }
+.dark-theme div h3 { color: var(--h3-color); }
+
+/* Error/Loading States Dark */
+.dark-theme .verse-result.error {
+    color: var(--error-color);
+    border-color: var(--error-color);
+}
+.dark-theme .verse-result.loading {
+    color: var(--secondary-text-color);
+}
+
+/* Penyesuaian kecil lainnya untuk dark theme jika perlu */
+.dark-theme #file-status {
+    color: var(--secondary-text-color);
+}
+.dark-theme .icon-setting label {
+    color: var(--secondary-text-color);
+}
+
+/* Content Group (jika masih digunakan) */
+.dark-theme .content-group {
+    border-color: var(--border-color);
+}
+.dark-theme .content-group:hover {
+    background-color: var(--button-bg);
+}
+.dark.theme h4 {
+    color: var(--main-text-color);
+}
+
+
+/* === Gaya Tema untuk Modal (Konsisten) === */
+
+/* Light Theme Modal Styles */
+.light-theme .modal-popup {
+    background-color: var(--modal-overlay-bg);
+}
+.light-theme .modal-popup-content {
+    background-color: var(--panel-bg-color);
+    color: var(--main-text-color);
+    border: 1px solid var(--border-color);
+}
+.light-theme .modal-popup-content h3 {
+    color: var(--main-text-color);
+}
+.light-theme .modal-close-button {
+    color: var(--secondary-text-color);
+}
+.light-theme .modal-close-button:hover {
+    color: var(--main-text-color);
+}
+.light-theme .modal-popup-content button {
+    background-color: var(--button-bg);
+    color: var(--button-text-color);
+    border: 1px solid var(--input-border);
+}
+.light-theme .modal-popup-content button:hover {
+    background-color: var(--button-hover-bg);
+}
+.light-theme .modal-popup-content button:disabled {
+    background-color: #e9ecef; /* Atau var(--input-bg) jika lebih redup */
+    color: #adb5bd; /* Atau var(--secondary-text-color) dengan opacity */
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+.light-theme .modal-popup-content input[type="text"] {
+    background-color: var(--input-bg);
+    color: var(--input-text);
+    border: 1px solid var(--input-border);
+}
+.light-theme .modal-popup-content input[type="text"]::placeholder {
+    color: var(--secondary-text-color);
+    opacity: 0.7;
+}
+.light-theme .modal-popup-content .file-list-container {
+    background-color: var(--main-bg-color); /* Sedikit beda dari panel */
+    border: 1px solid var(--border-color);
+}
+.light-theme .modal-popup-content .file-list-button {
+    background-color: var(--button-bg);
+    color: var(--button-text-color);
+    border: 1px solid var(--input-border);
+}
+.light-theme .modal-popup-content .file-list-button:hover {
+    background-color: var(--button-hover-bg);
+}
+.light-theme .modal-popup-content .file-list-button.selected {
+    background-color: var(--button-active-bg);
+    color: var(--button-active-text);
+    border-color: var(--button-active-bg);
+}
+.light-theme .modal-resize-handle {
+    border-right: 3px solid var(--modal-resize-handle-border);
+    border-bottom: 3px solid var(--modal-resize-handle-border);
+}
+
+/* Dark Theme Modal Styles */
+body.dark-theme .modal-popup {
+    background-color: var(--modal-overlay-bg);
+}
+body.dark-theme .modal-popup-content {
+    background-color: var(--panel-bg-color);
+    color: var(--main-text-color);
+    border: 1px solid var(--border-color);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
+}
+body.dark-theme .modal-popup-content h3 {
+    color: var(--main-text-color);
+}
+body.dark-theme .modal-close-button {
+    color: var(--secondary-text-color);
+}
+body.dark-theme .modal-close-button:hover {
+    color: var(--main-text-color); }
+
+body.dark-theme .modal-popup-content button {
+    background-color: var(--button-bg);
+    color: var(--button-text-color);
+    border: 1px solid var(--input-border);
+}
+body.dark-theme .modal-popup-content button:hover {
+    background-color: var(--button-hover-bg); 
+}
+body.dark-theme .modal-popup-content button:disabled {
+    background-color: var(--input-bg); /* Lebih redup */
+    color: var(--secondary-text-color);
+    opacity: 0.6;
+}
+body.dark-theme .modal-popup-content input[type="text"] {
+    background-color: var(--input-bg);
+    color: var(--input-text);
+    border: 1px solid var(--input-border);
+}
+body.dark-theme .modal-popup-content input[type="text"]::placeholder {
+    color: var(--secondary-text-color); opacity: 0.7; 
+}
+body.dark-theme .modal-popup-content .file-list-container {
+    background-color: var(--main-bg-color); /* Sedikit beda dari panel */
+    border: 1px solid var(--border-color);
+}
+body.dark-theme .modal-popup-content .file-list-button {
+    background-color: var(--button-bg);
+    color: var(--button-text-color);
+    border: 1px solid var(--input-border);
+}
+body.dark-theme .modal-popup-content .file-list-button:hover {
+    background-color: var(--button-hover-bg); 
+}
+body.dark-theme .modal-popup-content .file-list-button.selected {
+    background-color: var(--button-active-bg);
+    color: var(--button-active-text);
+    border-color: var(--button-active-bg);
+    font-weight: bold; 
+}
+body.dark-theme .modal-resize-handle {
+    border-right: 3px solid var(--modal-resize-handle-border);
+    border-bottom: 3px solid var(--modal-resize-handle-border);
+}
+
+
+
+
+
+
