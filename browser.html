@@ -183,25 +183,23 @@
             width: 0 !important; /* Paksa lebar 0 */
         }
 
-        /* Penyesuaian style elemen anak agar relatif terhadap wrapper jika perlu */
-        /* (Mungkin tidak perlu banyak perubahan jika elemen anak tetap 'fixed') */
+        /* Style untuk text wrapping */
         #display {
-            /* position: fixed; (sudah) */
-            /* left: 50%; transform: translateX(-50%); (akan diatur JS) */
-            /* max-width: 90%; (tetap relatif viewport, OK) */
-            /* ... */
+            text-align: justify;
+            overflow-wrap: break-word;
+            word-wrap: break-word;
+            hyphens: auto;
         }
-
-        #church-logo-container {
-            /* position: fixed; (sudah) */
-            /* top: 10px; right: 10px; (akan diatur JS relatif ke wrapper) */
-            /* ... */
+        
+        /* Style untuk circular webcam */
+        .video-feed-circle {
+            z-index: 10; /* Pastikan di atas teks */
         }
-
-        #lower-third-bg {
-            /* position: fixed; (sudah) */
-            /* bottom: 0; left: 0; width: 100%; (akan diatur JS) */
-            /* ... */
+        
+        /* Style untuk display area */
+        #display.with-text-wrap {
+            padding-right: 20px;
+            box-sizing: border-box;
         }
 
         /* Kelas untuk menyembunyikan elemen */
@@ -784,49 +782,37 @@
         function manageTextFlowShaper(enable) {
             let shaper = document.getElementById('text-flow-shaper');
             const displayArea = document.getElementById('display');
-
+        
             if (enable) {
                 if (!shaper && displayArea) {
                     shaper = document.createElement('div');
-                    shaper.id = 'text-flow-shaper'; // Pastikan ID ini unik dan digunakan secara konsisten
-                    if (displayArea.firstChild) {
-                        displayArea.insertBefore(shaper, displayArea.firstChild);
-                    } else {
-                        displayArea.appendChild(shaper);
-                    }
+                    shaper.id = 'text-flow-shaper';
+                    displayArea.insertBefore(shaper, displayArea.firstChild);
                 }
                 
                 const webcamFeed = document.getElementById('circularWebcamFeedContainer');
                 if (shaper && webcamFeed) {
-                    // Gunakan ukuran aktual dari circularWebcamFeedContainer
-                    const currentFeedWidth = parseFloat(webcamFeed.style.width) || webcamFeed.offsetWidth;
-                    const currentFeedHeight = parseFloat(webcamFeed.style.height) || webcamFeed.offsetHeight;
-
-                    const desiredGapFromText = 15;     // Desired space between text and the circle's edge
-
-                    // Calculate the shaper's dimensions to match the webcam feed's OUTER dimensions
-                    // Karena border-radius 50% pada webcamFeed, shaper harusnya sama ukurannya dengan webcamFeed
-                    const shaperBoxWidth = currentFeedWidth;
-                    const shaperBoxHeight = currentFeedHeight;
-
-                    shaper.style.float = 'right';
-                    shaper.style.width = `${shaperBoxWidth}px`;
-                    shaper.style.height = `${shaperBoxHeight}px`;
+                    const webcamRect = webcamFeed.getBoundingClientRect();
+                    const displayRect = displayArea.getBoundingClientRect();
                     
-                    // shape-outside: circle(50%) will create a circle whose diameter
-                    // matches the smaller of the shaperBoxWidth or shaperBoxHeight,
-                    // centered within the shaperBox. Since width and height are equal here, it's a perfect fit.
-                    shaper.style.shapeOutside = `circle(50%)`; 
+                    // Hitung posisi relatif webcam terhadap display area
+                    const relativeLeft = webcamRect.left - displayRect.left;
+                    const relativeTop = webcamRect.top - displayRect.top;
                     
-                    // shape-margin pushes the text away from the defined shape.
-                    shaper.style.shapeMargin = `${desiredGapFromText}px`;
-                    
-                    // shaper.style.backgroundColor = 'rgba(255, 0, 0, 0.1)'; // Untuk debug
-                    shaper.style.display = 'block'; // Ensure it's a block for float and dimensions
+                    // Atur shape-outside untuk membuat text wrap
+                    shaper.style.cssText = `
+                        position: relative;
+                        float: right;
+                        width: ${webcamRect.width}px;
+                        height: ${webcamRect.height}px;
+                        shape-outside: circle(50% at ${relativeLeft + webcamRect.width/2}px ${relativeTop + webcamRect.height/2}px);
+                        shape-margin: 15px;
+                        pointer-events: none;
+                    `;
                 }
             } else {
                 if (shaper) {
-                    shaper.style.display = 'none'; // Hide it when not in split-70 mode
+                    shaper.style.cssText = '';
                 }
             }
         }
@@ -889,29 +875,30 @@
 
                     break;
                 case 'split-70':
-                    contentWrapper.style.width = '100%'; // Izinkan content wrapper (dan display di dalamnya) full width
+                    contentWrapper.style.width = '100%';
                     contentWrapper.style.left = '0';
-                    mainWebcamVideo.style.display = 'none'; // Sembunyikan video split 30% karena diganti bulatan
-
+                    mainWebcamVideo.style.display = 'none';
+                
                     if (circularWebcamFeedContainer) {
-                        // circularWebcamFeedContainer.classList.remove('visible'); // Remove this line if it exists
                         circularWebcamFeedContainer.classList.add('visible');
                     }
-                    manageTextFlowShaper(true); // Aktifkan shaper untuk alur teks
-
+                    
+                    // Nonaktifkan lower third
+                    lowerThirdBg.style.display = 'none';
+                    display.classList.remove('with-lower-third');
+                    display.classList.add('with-text-wrap');
+                    
                     if (displayArea) {
-                        // Posisikan displayArea di tengah viewport
                         displayArea.style.left = '50%';
                         displayArea.style.transform = 'translateX(-50%)';
-                        // // Atur maxWidth displayArea agar mengisi viewport, dikurangi padding kiri dan kanan default CSS.
-                        // displayArea.style.maxWidth = 'calc(100% - 40px)'; // 40px = 20px kiri + 20px kanan dari CSS #display
-                        // Explicitly set width for #display to enable text flow around shaper
-                        displayArea.style.width = 'calc(100% - 40px)'; // 40px = 20px L + 20px R default padding
-                        //padddingRight sudah direset ke 20px di atas, shaper akan menangani sisanya.
+                        displayArea.style.width = 'calc(100% - 40px)';
+                        displayArea.style.maxWidth = 'none'; // Hapus max-width
                     }
-
-                    lowerThirdBg.style.width = '100%'; // Lower third juga full width
+                    
+                    // Aktifkan text wrapping
+                    manageTextFlowShaper(true);
                     break;
+
                 case 'camera':
                     // In 'camera' layout, the main webcam video is fullscreen background.
                     // The circular feed can still be an overlay on top of it.
@@ -1312,6 +1299,13 @@
       
         console.log("Inisialisasi selesai.");
         
+        // event listener untuk resize window:
+        window.addEventListener('resize', () => {
+        const currentLayout = localStorage.getItem('settingLayout') || 'fullscreen';
+        if (currentLayout === 'split-70') {
+            manageTextFlowShaper(true);
+        }
+});
         </script>
 </body>
 </html>
