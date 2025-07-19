@@ -862,25 +862,35 @@
             // Terapkan style spesifik layout
             switch (layout) {
                 case 'split-50':
-                    contentWrapper.style.width = '50%';
+                    contentWrapper.style.width = '70%'; // Ubah dari 50% ke 70%
                     if (displayArea) {
-                        displayArea.style.left = '25%';
-                        displayArea.style.maxWidth = '45%';
+                        displayArea.style.left = '35%'; // Ubah dari 25% ke 35% untuk centering dalam area 70%
+                        displayArea.style.maxWidth = '65%'; // Ubah dari 45% ke 65% untuk area konten yang lebih lebar
                     }
-                    lowerThirdBg.style.width = '50%';
+                    lowerThirdBg.style.width = '70%'; // Ubah dari 50% ke 70%
                     mainWebcamVideo.style.display = 'block';
-                    mainWebcamVideo.style.left = '50%';
-                    mainWebcamVideo.style.width = '50%';
+                    mainWebcamVideo.style.left = '70%'; // Ubah dari 50% ke 70% untuk mulai dari batas konten
+                    mainWebcamVideo.style.width = '30%'; // Ubah dari 50% ke 30% untuk area kamera
                     mainWebcamVideo.style.height = '100vh';
-
                     break;
                 case 'split-70':
                     contentWrapper.style.width = '100%';
                     contentWrapper.style.left = '0';
                     mainWebcamVideo.style.display = 'none';
-                
+
                     if (circularWebcamFeedContainer) {
+                        circularWebcamFeedContainer.style.display = 'block'; // Tambahkan ini
+                        circularWebcamFeedContainer.classList.remove('hidden');
                         circularWebcamFeedContainer.classList.add('visible');
+                        
+                        // Pastikan video stream langsung dimulai
+                        if (!circularWebcamVideo.srcObject) {
+                            startWebcam().then(() => {
+                                console.log("Webcam started for split-70 mode");
+                            }).catch(err => {
+                                console.error("Error starting webcam in split-70:", err);
+                            });
+                        }
                     }
                     
                     // Nonaktifkan lower third
@@ -892,7 +902,7 @@
                         displayArea.style.left = '50%';
                         displayArea.style.transform = 'translateX(-50%)';
                         displayArea.style.width = 'calc(100% - 40px)';
-                        displayArea.style.maxWidth = 'none'; // Hapus max-width
+                        displayArea.style.maxWidth = 'none';
                     }
                     
                     // Aktifkan text wrapping
@@ -900,14 +910,14 @@
                     break;
 
                 case 'camera':
-                    // In 'camera' layout, the main webcam video is fullscreen background.
-                    // The circular feed can still be an overlay on top of it.
                     mainWebcamVideo.style.display = 'block';
                     mainWebcamVideo.style.left = '0%';
                     mainWebcamVideo.style.width = '100%';
                     mainWebcamVideo.style.height = '100vh';
                     if (circularWebcamFeedContainer) {
-                        circularWebcamFeedContainer.classList.add('visible'); // Show circular feed in camera layout
+                        circularWebcamFeedContainer.style.display = 'none'; // Tambahkan ini
+                        circularWebcamFeedContainer.classList.remove('visible');
+                        circularWebcamFeedContainer.classList.add('hidden');
                     }
                     break;
                 case 'fullscreen':
@@ -958,7 +968,7 @@
         // Lower third visibility: hidden jika master toggle/text toggle off, ATAU jika layout camera, ATAU jika displayArea hidden
         let isLowerThirdHidden = isHidden || !showTextSetting || currentLayout === 'camera'; // <-- Tambahkan || currentLayout === 'camera'
         // Circular cam visibility: hidden jika master toggle off, ATAU jika layout BUKAN split-70 atau camera
-        let isCircularCamHidden = isHidden || (currentLayout !== 'split-70' && currentLayout !== 'camera'); // <-- Add logic for circular cam
+        let isCircularCamHidden = isHidden || currentLayout !== 'split-70'; // Hapus kondisi camera
 
         console.log(`Calculated visibility: display=${!isDisplayHidden}, logo=${!isLogoHidden}, lowerThird=${!isLowerThirdHidden}, circularCam=${!isCircularCamHidden}`);
 
