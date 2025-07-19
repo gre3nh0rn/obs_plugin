@@ -57,27 +57,6 @@
         /* === AKHIR CSS LOWER THIRD === */
 
 
-        /* === CSS UNTUK ANIMASI KARAKTER (Tidak berubah) === */
-        .char-animate {
-            display: inline-block; /* Penting untuk transform dan layout spasi */
-            opacity: 0;
-            transform: translateX(-15px); /* Mulai sedikit dari kiri */
-            animation: charReveal 0.1s cubic-bezier(0.215, 0.610, 0.355, 1.000) forwards; /* Animasi masuk */
-            /* animation-delay akan diatur oleh JS */
-        }
-
-        @keyframes charReveal {
-            from {
-                opacity: 0;
-                transform: translateX(-15px);
-            }
-            to {
-                opacity: 1;
-                transform: translateX(0);
-            }
-        }
-        /* === AKHIR CSS ANIMASI KARAKTER === */
-
         /* Pastikan #display punya z-index dan posisi default */
         #display {
             position: fixed;
@@ -412,121 +391,7 @@
 
         // --- Fungsi Animasi Teks Masuk (Diperbaiki untuk Spasi dan Line Break v2) ---
         function animateTextIn() {
-            if (animationTimeoutId) {
-                clearTimeout(animationTimeoutId);
-                animationTimeoutId = null;
-            }
-
-            // 1. Hapus elemen animasi lama (span dan <br> khusus)
-            const oldAnimElements = display.querySelectorAll('span.char-animate, span.space-char, br.anim-br');
-            oldAnimElements.forEach(el => {
-                if (el.parentNode) {
-                    if (el.tagName === 'SPAN') {
-                        el.parentNode.replaceChild(document.createTextNode(el.textContent), el);
-                    } else if (el.tagName === 'BR') {
-                        el.parentNode.removeChild(el);
-                    }
-                }
-            });
-
-            // 2. Normalisasi DOM
-            display.normalize();
-
-            // 3. Delay kecil sebelum memulai animasi baru
-            animationTimeoutId = setTimeout(() => {
-                const nodesToProcess = Array.from(display.childNodes);
-                const fragment = document.createDocumentFragment();
-                let charIndex = 0;
-                const delayFactor = 0.03;
-
-                function processNode(node) {
-                    // ... (logika processNode yang sudah ada tetap sama) ...
-                    if (node.nodeType === Node.TEXT_NODE) {
-                        const text = node.textContent;
-                        for (let i = 0; i < text.length; i++) {
-                            const char = text[i];
-
-                            if (char === '\n') {
-                                const br = document.createElement('br');
-                                br.className = 'anim-br';
-                                fragment.appendChild(br);
-                            } else if (char.trim() !== '') {
-                                const span = document.createElement('span');
-                                span.textContent = char;
-                                span.className = 'char-animate';
-                                span.style.display = 'inline-block';
-                                span.style.animationDelay = `${charIndex * delayFactor}s`;
-                                fragment.appendChild(span);
-                                charIndex++;
-                            } else {
-                                const span = document.createElement('span');
-                                span.textContent = char;
-                                span.className = 'space-char';
-                                span.style.display = 'inline';
-                                span.style.opacity = '1';
-                                span.style.animation = 'none';
-                                fragment.appendChild(span);
-                            }
-                        }
-                    } else if (node.nodeType === Node.ELEMENT_NODE) {
-                        const clonedNode = node.cloneNode(false);
-                        processChildNodes(node, clonedNode);
-                        fragment.appendChild(clonedNode);
-                    } else {
-                        fragment.appendChild(node.cloneNode(true));
-                    }
-                }
-
-                function processChildNodes(originalParent, clonedParent) {
-                    // ... (logika processChildNodes yang sudah ada tetap sama) ...
-                    originalParent.childNodes.forEach(child => {
-                        if (child.nodeType === Node.TEXT_NODE) {
-                            const text = child.textContent;
-                            for (let i = 0; i < text.length; i++) {
-                                const char = text[i];
-                                if (char === '\n') {
-                                    const br = document.createElement('br');
-                                    br.className = 'anim-br';
-                                    clonedParent.appendChild(br);
-                                } else if (char.trim() !== '') {
-                                    const span = document.createElement('span');
-                                    span.textContent = char;
-                                    span.className = 'char-animate';
-                                    span.style.display = 'inline-block';
-                                    span.style.animationDelay = `${charIndex * delayFactor}s`;
-                                    clonedParent.appendChild(span);
-                                    charIndex++;
-                                } else {
-                                    const span = document.createElement('span');
-                                    span.textContent = char;
-                                    span.className = 'space-char';
-                                    span.style.display = 'inline';
-                                    span.style.opacity = '1';
-                                    span.style.animation = 'none';
-                                    clonedParent.appendChild(span);
-                                }
-                            }
-                        } else if (child.nodeType === Node.ELEMENT_NODE) {
-                            const clonedChild = child.cloneNode(false);
-                            processChildNodes(child, clonedChild); // Rekursif lagi
-                            clonedParent.appendChild(clonedChild);
-                        } else {
-                            clonedParent.appendChild(child.cloneNode(true));
-                        }
-                    });
-                }
-
-                nodesToProcess.forEach(processNode);
-
-                // 4. Ganti konten display dengan fragment yang sudah diproses
-                display.innerHTML = '';
-                display.appendChild(fragment);
-
-                // 5. Panggil applyStyle SETELAH DOM animasi selesai dibuat
-                // Ini penting agar perhitungan background gradient/solid benar
-                applyStyle(currentStyle); // Panggil applyStyle di sini
-
-            }, 50); // Delay 50ms
+            // Fungsi ini sekarang kosong, animasi teks karakter telah dihapus
         }
 
         // --- Fungsi Mengatur Tinggi Lower Third dan Posisi Display (Tidak berubah) ---
@@ -645,56 +510,55 @@
 
         // --- Fungsi Apply Content (Tidak berubah signifikan) ---
         function applyContent(rawText, source) {
-            currentSource = source || 'unknown'; // Simpan sumber terakhir
+    currentSource = source || 'unknown'; // Simpan sumber terakhir
 
-            if (source === 'editor') {
-                const editorParagraphs = (rawText || '').split(/\r\n\r\n|\n\n|\r\n|\n/);
-                editorInitialLineCount = editorParagraphs.filter(p => p.trim() !== '').length;
-                console.log(`[applyContent] Set editorInitialLineCount: ${editorInitialLineCount} for rawText: "${(rawText || '').substring(0,50)}"`);
-            }
+    if (source === 'editor') {
+        const editorParagraphs = (rawText || '').split(/\r\n\r\n|\n\n|\r\n|\n/);
+        editorInitialLineCount = editorParagraphs.filter(p => p.trim() !== '').length;
+        console.log(`[applyContent] Set editorInitialLineCount: ${editorInitialLineCount} for rawText: "${(rawText || '').substring(0,50)}"`);
+    }
 
-            if (rawText === null) rawText = '';
-            const textToFormat = String(rawText); // Ini adalah teks mentah dari localStorage
+    if (rawText === null) rawText = '';
+    const textToFormat = String(rawText); // Ini adalah teks mentah dari localStorage
 
-            // Cek apakah ini konten Alkitab (untuk mencegah format ulang)
-            // Anda mungkin perlu membuat deteksi ini lebih kuat jika format Alkitab bisa bervariasi
-            const isBibleVerse = textToFormat.includes('<div class="icon">') || textToFormat.includes('<div class="verse-text">') || source === 'bible'; // Tambahkan cek source === 'bible' untuk keamanan
-                let formattedHtml = textToFormat; // Mulai dengan teks mentah
-                // Hanya format jika BUKAN ayat Alkitab
-                // Pengecekan sumber dihapus agar teks dari displayTab juga diformat
-                if (!isBibleVerse) {
-                    // Proses formatting (replace %, *, _, #) sekarang berjalan untuk editor DAN displayTab
-                    let txtHtml=escapeHtml(textToFormat);
-                    // alert(escapeHtml(txtHtml));
-                    formattedHtml = txtHtml.replace(/\%(.*?)\%/g, '<span class="not-angka">$1</span>')
-                    .replace(/\*([\s\S]*?)\*/g, '<span class="bold">$1</span>')
-                    .replace(/\_([\s\S]*?)\_/g, '<span class="italic">$1</span>')
-                    .replace(/\#([\s\S]*?)\#/gm, '<span class="lyric">$1</span>');
+    // Cek apakah ini konten Alkitab (untuk mencegah format ulang)
+    // Anda mungkin perlu membuat deteksi ini lebih kuat jika format Alkitab bisa bervariasi
+    const isBibleVerse = textToFormat.includes('<div class="icon">') || textToFormat.includes('<div class="verse-text">') || source === 'bible'; // Tambahkan cek source === 'bible' untuk keamanan
+        let formattedHtml = textToFormat; // Mulai dengan teks mentah
+        // Hanya format jika BUKAN ayat Alkitab
+        // Pengecekan sumber dihapus agar teks dari displayTab juga diformat
+        if (!isBibleVerse) {
+            // Proses formatting (replace %, *, _, #) sekarang berjalan untuk editor DAN displayTab
+            let txtHtml=escapeHtml(textToFormat);
+            // alert(escapeHtml(txtHtml));
+            formattedHtml = txtHtml.replace(/\%(.*?)\%/g, '<span class="not-angka">$1</span>')
+            .replace(/\*([\s\S]*?)\*/g, '<span class="bold">$1</span>')
+            .replace(/\_([\s\S]*?)\_/g, '<span class="italic">$1</span>')
+            .replace(/\#([\s\S]*?)\#/gm, '<span class="lyric">$1</span>');
 
-                    // Ini untuk menghapus tag <ayatN>, <chorus> dll di sini jika TIDAK ingin menampilkannya di browser.html
-                //  formattedHtml = formattedHtml.replace(/<\/?(ayat\d*|center|chorus|reff|bridge|intro|outro|verse\d*|v\d*)[^>]*>/gi, ''); // Opsional: Hapus tag custom
-                }
-
-            display.innerHTML = formattedHtml; // Menampilkan hasil yang sudah diformat (atau teks Alkitab asli)
-
-            // Tentukan state lower third SEBELUM memanggil animasi/style
-            const stateChanged = determineLowerThirdState(currentSource, formattedHtml);
-
-            // // Panggil animasi HANYA jika lower third aktif
-            // if (isLowerThirdActive) {
-            // Panggil animasi HANYA jika lower third aktif DAN BUKAN dari navigasi panah kanan khusus
-            // Navigasi panah kanan (editor_arrow_right_nav) sudah memiliki animasi slide-up sendiri untuk .line-current
-            if (isLowerThirdActive && currentSource !== 'editor_arrow_right_nav') {
-                animateTextIn(); // Panggil fungsi animasi di sini (applyStyle akan dipanggil di akhir animasi)
-            } else {
-                // Jika lower third TIDAK aktif, ATAU jika sumbernya adalah navigasi panah kanan, panggil applyStyle langsung
-                // Jika lower third TIDAK aktif, panggil applyStyle langsung
-                applyStyle(currentStyle);
-            }
-
-            // adjustLowerThirdLayout akan dipanggil oleh applyStyle atau di akhir animasi
+            // Ini untuk menghapus tag <ayatN>, <chorus> dll di sini jika TIDAK ingin menampilkannya di browser.html
+        //  formattedHtml = formattedHtml.replace(/<\/?(ayat\d*|center|chorus|reff|bridge|intro|outro|verse\d*|v\d*)[^>]*>/gi, ''); // Opsional: Hapus tag custom
         }
 
+    display.innerHTML = formattedHtml; // Menampilkan hasil yang sudah diformat (atau teks Alkitab asli)
+
+    // Tentukan state lower third SEBELUM memanggil animasi/style
+    const stateChanged = determineLowerThirdState(currentSource, formattedHtml);
+
+    // // Panggil animasi HANYA jika lower third aktif
+    // if (isLowerThirdActive) {
+    // Panggil animasi HANYA jika lower third aktif DAN BUKAN dari navigasi panah kanan khusus
+    // Navigasi panah kanan (editor_arrow_right_nav) sudah memiliki animasi slide-up sendiri untuk .line-current
+    // if (isLowerThirdActive && currentSource !== 'editor_arrow_right_nav') {
+    //     animateTextIn(); // Panggil fungsi animasi di sini (applyStyle akan dipanggil di akhir animasi)
+    // } else {
+        // Jika lower third TIDAK aktif, ATAU jika sumbernya adalah navigasi panah kanan, panggil applyStyle langsung
+        // Jika lower third TIDAK aktif, panggil applyStyle langsung
+        applyStyle(currentStyle);
+    // }
+
+    // adjustLowerThirdLayout akan dipanggil oleh applyStyle atau di akhir animasi
+}
         // Fungsi escapeHtml untuk atribut HTML (jika diperlukan terpisah)
         function escapeHtml(str) {
             if (typeof str !== 'string') return '';
@@ -706,78 +570,99 @@
         }
 
         function applyStyle(style) {
-            currentStyle = style || {};
+    currentStyle = style || {};
 
-            // Ambil SEMUA style dari localStorage atau default
-            const fontSize = currentStyle.fontSize || '80';
-            const fontColor = currentStyle.fontColor || '#000000'; // Ambil warna font dari setting
-            const bgColor = currentStyle.bgColor || '#ffffff';
-            const opacity = currentStyle.opacity || '0.5';
-            const outlineWidth = parseFloat(currentStyle.outlineWidth || '0');
-            const outlineColor = currentStyle.outlineColor || '#000000';
+    // Ambil SEMUA style dari localStorage atau default
+    let fontSize = currentStyle.fontSize || '80';
+    const fontColor = currentStyle.fontColor || '#000000'; // Ambil warna font dari setting
+    const bgColor = currentStyle.bgColor || '#ffffff';
+    const opacity = currentStyle.opacity || '0.5';
+    const outlineWidth = parseFloat(currentStyle.outlineWidth || '0');
+    const outlineColor = currentStyle.outlineColor || '#000000';
 
-            // Terapkan style dasar yang selalu berlaku
-            display.style.fontSize = `${fontSize}px`;
-            display.style.color = fontColor; // SELALU gunakan warna font dari setting
+    // Terapkan style dasar yang selalu berlaku
+    display.style.fontSize = `${fontSize}px`;
+    display.style.color = fontColor; // SELALU gunakan warna font dari setting
 
-            // Hapus style lama yang mungkin konflik
-            display.style.background = '';
-            display.style.backgroundColor = '';
-            display.style.textShadow = ''; // Akan diatur oleh outline logic
-            display.style.webkitTextStrokeWidth = '';
-            display.style.webkitTextStrokeColor = '';
-            display.style.paintOrder = '';
-            display.style.bottom = ''; // Reset bottom, akan diatur jika perlu
+    // Hapus style lama yang mungkin konflik
+    display.style.background = '';
+    display.style.backgroundColor = '';
+    display.style.textShadow = ''; // Akan diatur oleh outline logic
+    display.style.webkitTextStrokeWidth = '';
+    display.style.webkitTextStrokeColor = '';
+    display.style.paintOrder = '';
+    display.style.bottom = ''; // Reset bottom, akan diatur jika perlu
 
-            // Hitung jumlah baris yang sebenarnya ditampilkan untuk logika background
-            // Pastikan display.textContent sudah terisi dengan benar sebelum pemanggilan ini
-            const paragraphsArray = (display.textContent || '').split(/\r\n\r\n|\n\n|\r\n|\n/);
-            // const nonEmptyParagraphsCount = paragraphsArray.filter(p => p.trim() !== '').length;
-            // // console.log(`[applyStyle] Source: ${currentSource}, Lines for BG: ${nonEmptyParagraphsCount}, BGColor: ${currentStyle.bgColor}`);
-            let nonEmptyParagraphsCount = paragraphsArray.filter(p => p.trim() !== '').length;
-            console.log(`[applyStyle] Source: ${currentSource}, Lines for BG: ${nonEmptyParagraphsCount}, BGColor: ${currentStyle.bgColor}`);
-            
-            // For editor mode, especially when lower third (and thus animation) is active,
-            // trust the initial line count calculated before animation.
-            if (currentSource === 'editor' && isLowerThirdActive) {
-                nonEmptyParagraphsCount = editorInitialLineCount;
-                console.log(`[applyStyle] EDITOR mode with LowerThird, using editorInitialLineCount: ${nonEmptyParagraphsCount}`);
+    // Hitung jumlah baris yang sebenarnya ditampilkan untuk logika background
+    // Pastikan display.textContent sudah terisi dengan benar sebelum pemanggilan ini
+    const paragraphsArray = (display.textContent || '').split(/\r\n\r\n|\n\n|\r\n|\n/);
+    let nonEmptyParagraphsCount = paragraphsArray.filter(p => p.trim() !== '').length;
+    console.log(`[applyStyle] Source: ${currentSource}, Lines for BG: ${nonEmptyParagraphsCount}, BGColor: ${currentStyle.bgColor}`);
+
+    // For editor mode, especially when lower third (and thus animation) is active,
+    // trust the initial line count calculated before animation.
+    if (currentSource === 'editor' && isLowerThirdActive) {
+        nonEmptyParagraphsCount = editorInitialLineCount;
+        console.log(`[applyStyle] EDITOR mode with LowerThird, using editorInitialLineCount: ${nonEmptyParagraphsCount}`);
+    }
+
+    // Logika berdasarkan status lower third
+    if (isLowerThirdActive) {
+        display.classList.add('with-lower-third'); // Tambah class
+
+        applyDisplayBackground(display, currentSource, currentStyle, nonEmptyParagraphsCount);
+
+    } else {
+        // Lower third TIDAK aktif
+        display.classList.remove('with-lower-third'); // Hapus class
+        applyDisplayBackground(display, currentSource, currentStyle, nonEmptyParagraphsCount);
+        display.style.bottom = '1%'; // Gunakan posisi default
+    }
+
+    // --- Logika Outline (Berlaku untuk kedua kondisi) ---
+    if (outlineWidth > 0) {
+        display.style.webkitTextStrokeWidth = `${outlineWidth}px`;
+        display.style.webkitTextStrokeColor = outlineColor; // Gunakan warna outline dari setting
+        display.style.paintOrder = 'stroke fill';
+        display.style.textShadow = 'none'; // Hapus shadow jika ada outline
+        // console.log(`Applying outline: ${outlineWidth}px ${outlineColor}`);
+    } else {
+        // Hapus style outline jika tidak aktif
+        display.style.webkitTextStrokeWidth = '';
+        display.style.webkitTextStrokeColor = '';
+        display.style.paintOrder = '';
+        // console.log('Removing outline');
+    }
+    // --- Akhir Logika Outline ---
+
+    // --- Logika Fit Teks ke Area Konten (Khusus Split-50) ---
+    if (localStorage.getItem('settingLayout') === 'split-50') {
+        const displayArea = document.getElementById('display');
+        if (displayArea) {
+            let originalFontSize = fontSize;
+            let currentFontSize = parseFloat(originalFontSize);
+            displayArea.style.fontSize = `${currentFontSize}px`; // Set ukuran awal
+
+            // Cek apakah teks overflow
+            while (displayArea.scrollHeight > displayArea.clientHeight || displayArea.scrollWidth > displayArea.clientWidth) {
+                currentFontSize -= 1; // Kurangi ukuran huruf
+                displayArea.style.fontSize = `${currentFontSize}px`; // Terapkan ukuran baru
+
+                if (currentFontSize <= 10) { // Batas minimum ukuran huruf
+                    console.warn("Teks tidak dapat di fit, mencapai batas minimum ukuran huruf.");
+                    break;
+                }
             }
-
-            // Logika berdasarkan status lower third
-            if (isLowerThirdActive) {
-                display.classList.add('with-lower-third'); // Tambah class
-
-                applyDisplayBackground(display, currentSource, currentStyle, nonEmptyParagraphsCount);
-
-            } else {
-                // Lower third TIDAK aktif
-                display.classList.remove('with-lower-third'); // Hapus class
-                applyDisplayBackground(display, currentSource, currentStyle, nonEmptyParagraphsCount);
-                display.style.bottom = '1%'; // Gunakan posisi default
-            }
-
-            // --- Logika Outline (Berlaku untuk kedua kondisi) ---
-            if (outlineWidth > 0) {
-                display.style.webkitTextStrokeWidth = `${outlineWidth}px`;
-                display.style.webkitTextStrokeColor = outlineColor; // Gunakan warna outline dari setting
-                display.style.paintOrder = 'stroke fill';
-                display.style.textShadow = 'none'; // Hapus shadow jika ada outline
-                // console.log(`Applying outline: ${outlineWidth}px ${outlineColor}`);
-            } else {
-                // Hapus style outline jika tidak aktif
-                display.style.webkitTextStrokeWidth = '';
-                display.style.webkitTextStrokeColor = '';
-                display.style.paintOrder = '';
-                // console.log('Removing outline');
-            }
-            // --- Akhir Logika Outline ---
-
-            // Panggil penyesuaian layout SETELAH semua style diterapkan
-            // Delay kecil agar browser sempat render style sebelum mengukur
-            setTimeout(adjustLowerThirdLayout, 0);
+            fontSize = currentFontSize;
+            console.log(`[applyStyle] Split-50: Ukuran huruf disesuaikan menjadi ${fontSize}px agar pas dengan area konten.`);
         }
+    }
+    // --- Akhir Logika Fit Teks ---
 
+    // Panggil penyesuaian layout SETELAH semua style diterapkan
+    // Delay kecil agar browser sempat render style sebelum mengukur
+    setTimeout(adjustLowerThirdLayout, 0);
+}
         // --- Fungsi untuk Mengelola Text Flow Shaper ---
         function manageTextFlowShaper(enable) {
             let shaper = document.getElementById('text-flow-shaper');
