@@ -940,8 +940,33 @@
             }
 
             try {
+                // Minta daftar perangkat media
+                const devices = await navigator.mediaDevices.enumerateDevices();
+
+                // Cari perangkat video selain webcam default
+                let externalCameraDeviceId = null;
+                for (const device of devices) {
+                    if (device.kind === 'videoinput' && device.label.toLowerCase().indexOf('webcam') === -1) {
+                        externalCameraDeviceId = device.deviceId;
+                        console.log("External camera found:", device.label, device.deviceId);
+                        break; // Gunakan perangkat pertama yang ditemukan
+                    }
+                }
+
+                let constraints = { video: true, audio: false };
+
+                // Jika ada kamera eksternal, gunakan deviceId-nya
+                if (externalCameraDeviceId) {
+                    constraints = {
+                        video: {
+                            deviceId: { exact: externalCameraDeviceId }
+                        },
+                        audio: false
+                    };
+                }
+
                 // Minta akses ke video saja, tanpa audio
-                const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
+                const stream = await navigator.mediaDevices.getUserMedia(constraints);
 
                 // Salurkan stream ke kedua elemen video jika ada
                 // (atau Anda bisa memiliki logika untuk memilih salah satu berdasarkan state)
